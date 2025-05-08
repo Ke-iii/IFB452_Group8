@@ -1,6 +1,3 @@
 # Blockchain Coffee Supply verification
 
-Memebers
-Sandaru 
-Kevin
-Mia
+Memebers: Sandaru, Kevin, Mia
