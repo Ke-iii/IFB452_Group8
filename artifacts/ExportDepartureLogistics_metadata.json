@@ -1,0 +1,233 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_farmerContractAddress",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "batchId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "transportType",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "originPort",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "departureDate",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "exporter",
+						"type": "address"
+					}
+				],
+				"name": "DepartureLogged",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "departures",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "batchId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "transportType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "originPort",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "departureDate",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "logged",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "farmerContract",
+				"outputs": [
+					{
+						"internalType": "contract IFarmersBatchRegistration",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_batchId",
+						"type": "uint256"
+					}
+				],
+				"name": "getDeparture",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "batchId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "transportType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "originPort",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "departureDate",
+								"type": "string"
+							},
+							{
+								"internalType": "bool",
+								"name": "logged",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct ExportDepartureLogistics.Departure",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_batchId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_transportType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_originPort",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_departureDate",
+						"type": "string"
+					}
+				],
+				"name": "logDeparture",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"ExportDepartureLogistics.sol": "ExportDepartureLogistics"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"ExportDepartureLogistics.sol": {
+			"keccak256": "0xc3c7c86b885a0a85139d325303a1de3e3738337950ac223b322817f4a4625489",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://6d31821cab64eada1d07c44e9355b3cb23417e419add80c7cda2f67ce81ceb35",
+				"dweb:/ipfs/QmRzTr9TEHjpVMRUpfjLEfseh2AobdWiBoA79RkfpA63W8"
+			]
+		}
+	},
+	"version": 1
+}

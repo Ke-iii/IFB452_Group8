@@ -1,0 +1,303 @@
+{
+	"compiler": {
+		"version": "0.8.26+commit.8a97fa7a"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_farmerContractAddress",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "batchId",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "transportType",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "originPort",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "departureDate",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "arrivalDate",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "arrivalLocation",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "bool",
+						"name": "delayed",
+						"type": "bool"
+					},
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "exporter",
+						"type": "address"
+					}
+				],
+				"name": "ArrivalLogged",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "arrivals",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "batchId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "transportType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "originPort",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "departureDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "arrivalDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "arrivalLocation",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "delayed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "logged",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "farmerContract",
+				"outputs": [
+					{
+						"internalType": "contract IFarmersBatchRegistration",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_batchId",
+						"type": "uint256"
+					}
+				],
+				"name": "getArrival",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "batchId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "transportType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "originPort",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "departureDate",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "arrivalDate",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "arrivalLocation",
+								"type": "string"
+							},
+							{
+								"internalType": "bool",
+								"name": "delayed",
+								"type": "bool"
+							},
+							{
+								"internalType": "bool",
+								"name": "logged",
+								"type": "bool"
+							}
+						],
+						"internalType": "struct ExportArrivalLogistics.Arrival",
+						"name": "",
+						"type": "tuple"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "_batchId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "_transportType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_originPort",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_departureDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_arrivalDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "_arrivalLocation",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "_delayed",
+						"type": "bool"
+					}
+				],
+				"name": "logArrival",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "owner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"getArrival(uint256)": {
+					"notice": "Get arrival log for a specific batch"
+				},
+				"logArrival(uint256,string,string,string,string,string,bool)": {
+					"notice": "Log the arrival details of a coffee export batch"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"ExportArrivalLogistics.sol": "ExportArrivalLogistics"
+		},
+		"evmVersion": "cancun",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"ExportArrivalLogistics.sol": {
+			"keccak256": "0xde2b39b9e300e375575844c19315ce7296bbe6274ba3ec61291edaef283cdd93",
+			"license": "MIT",
+			"urls": [
+				"bzz-raw://9f46f13e6996968a66f9f7f712e80b8c98c24042734ceb1109bf86c2fa5c504c",
+				"dweb:/ipfs/QmWUSHz2df1c27os1EbHMJgXffcG6qG2W16F2Yew7Jo2jP"
+			]
+		}
+	},
+	"version": 1
+}

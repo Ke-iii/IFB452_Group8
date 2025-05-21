@@ -1,0 +1,870 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Coffee Supply Chain</title>
+
+</head>
+<body>
+<button id="connectButton">Connect MetaMask</button>
+  <div class="container">
+    <h1>Coffee Supply Chain</h1>
+
+        <div class="form-container">
+        <h2>Farmer Batch Registration</h2>
+        <form id="farmerForm">
+            <input type="text" id="certification" placeholder="Certification" required>
+            <input type="text" id="harvestDate" placeholder="Harvest Date" required>
+            <input type="text" id="location" placeholder="Location" required>
+            <input type="text" id="farmName" placeholder="Farm Name" required>
+            <input type="text" id="practices" placeholder="Practices" required>
+            <input type="text" id="exportCompany" placeholder="Export Company" required>
+            <button type="submit">Register Batch</button>
+        </form>
+    </div>
+
+    <!-- Departure Log -->
+    <div class="form-container">
+        <h2>Export Departure Logistics</h2>
+        <form id="departureForm">
+            <input type="number" placeholder="Batch ID" required>
+            <input type="text" placeholder="Transport Type" required>
+            <input type="text" placeholder="Origin Port" required>
+            <input type="text" placeholder="Departure Date" required>
+            <button type="submit">Log Departure</button>
+        </form>
+    </div>
+
+    <!-- Arrival Log -->
+    <div class="form-container">
+        <h2>Export Arrival Logistics</h2>
+        <form id="arrivalForm">
+            <input type="number" placeholder="Batch ID" required>
+            <input type="text" placeholder="Transport Type" required>
+            <input type="text" placeholder="Origin Port" required>
+            <input type="text" placeholder="Departure Date" required>
+            <input type="text" placeholder="Arrival Date" required>
+            <input type="text" placeholder="Arrival Location" required>
+            <label><input type="checkbox"> Delayed</label>
+            <button type="submit">Log Arrival</button>
+        </form>
+    </div>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <script> 
+  window.addEventListener('load', async () => {
+    if (typeof window.ethereum !== 'undefined') {
+        await initializeContracts();
+    }
+});
+// Configuration
+const farmerAddress = "0xD38cDADa22Cb0F8F72B9dF5904487eD9de08Fc1d"; // Replace with your address
+const departureAddress = "0x91afEFde90F75f9f4b4Ee29E94Bfcd21FbBb6449"; // Replace with your address
+const arrivalAddress = "0x38638516f2c1C0814547Ce130FA3A0833F88c2cf"; // Replace with your address
+
+// ABIs - Paste from Remix after compilation
+const farmerABI = [
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "certification",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "harvestDate",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "farmName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "practices",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "exportCompany",
+				"type": "string"
+			}
+		],
+		"name": "BatchRegistered",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_certification",
+				"type": "string"
+			}
+		],
+		"name": "addCertification",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "batchIdCounter",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "batches",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "certification",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "harvestDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "farmName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "practices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "exportCompany",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "getBatch",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "certification",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "harvestDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "farmName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "practices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "exportCompany",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBatchCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_certification",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_harvestDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_farmName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_practices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_exportCompany",
+				"type": "string"
+			}
+		],
+		"name": "registerBatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_certification",
+				"type": "string"
+			}
+		],
+		"name": "removeCertification",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "validCertifications",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+const departureABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_farmerContractAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "transportType",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "originPort",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "departureDate",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "exporter",
+				"type": "address"
+			}
+		],
+		"name": "DepartureLogged",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "departures",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "transportType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "originPort",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "departureDate",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "logged",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "farmerContract",
+		"outputs": [
+			{
+				"internalType": "contract IFarmersBatchRegistration",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_batchId",
+				"type": "uint256"
+			}
+		],
+		"name": "getDeparture",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "batchId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "transportType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "originPort",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "departureDate",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "logged",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct ExportDepartureLogistics.Departure",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_transportType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_originPort",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_departureDate",
+				"type": "string"
+			}
+		],
+		"name": "logDeparture",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+const arrivalABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_farmerContractAddress",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "transportType",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "originPort",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "departureDate",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "arrivalDate",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "arrivalLocation",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "bool",
+				"name": "delayed",
+				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "exporter",
+				"type": "address"
+			}
+		],
+		"name": "ArrivalLogged",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "arrivals",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "transportType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "originPort",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "departureDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "arrivalDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "arrivalLocation",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "delayed",
+				"type": "bool"
+			},
+			{
+				"internalType": "bool",
+				"name": "logged",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "farmerContract",
+		"outputs": [
+			{
+				"internalType": "contract IFarmersBatchRegistration",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_batchId",
+				"type": "uint256"
+			}
+		],
+		"name": "getArrival",
+		"outputs": [
+			{
+				"components": [
+					{
+						"internalType": "uint256",
+						"name": "batchId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "transportType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "originPort",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "departureDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "arrivalDate",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "arrivalLocation",
+						"type": "string"
+					},
+					{
+						"internalType": "bool",
+						"name": "delayed",
+						"type": "bool"
+					},
+					{
+						"internalType": "bool",
+						"name": "logged",
+						"type": "bool"
+					}
+				],
+				"internalType": "struct ExportArrivalLogistics.Arrival",
+				"name": "",
+				"type": "tuple"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_transportType",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_originPort",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_departureDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_arrivalDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_arrivalLocation",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "_delayed",
+				"type": "bool"
+			}
+		],
+		"name": "logArrival",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+
+let provider, signer;
+let farmerContract, departureContract, arrivalContract;
+
+// Initialize Contracts
+async function initializeContracts() {
+    provider = new ethers.providers.Web3Provider(window.ethereum);
+    signer = provider.getSigner();
+    
+    farmerContract = new ethers.Contract(farmerAddress, farmerABI, signer);
+    departureContract = new ethers.Contract(departureAddress, departureABI, signer);
+    arrivalContract = new ethers.Contract(arrivalAddress, arrivalABI, signer);
+}
+
+// Connect MetaMask
+document.getElementById('connectButton').addEventListener('click', async () => {
+    try {
+        await window.ethereum.request({ method: 'eth_requestAccounts' });
+        await initializeContracts();
+        alert('Connected to MetaMask!');
+    } catch (error) {
+        console.error(error);
+        alert('MetaMask connection failed');
+    }
+});
+
+// Farmer Form Submission
+document.getElementById('farmerForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+        const tx = await farmerContract.registerBatch(
+            document.getElementById('certification').value,
+            document.getElementById('harvestDate').value,
+            document.getElementById('location').value,
+            document.getElementById('farmName').value,
+            document.getElementById('practices').value,
+            document.getElementById('exportCompany').value
+        );
+        await tx.wait();
+        alert('Batch registered successfully!');
+    } catch (error) {
+        console.error(error);
+        alert('Registration failed');
+    }
+});
+
+// Departure Form Submission
+document.getElementById('departureForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+        const tx = await departureContract.logDeparture(
+            parseInt(document.getElementById('departureBatchId').value),
+            document.getElementById('transportType').value,
+            document.getElementById('originPort').value,
+            document.getElementById('departureDate').value
+        );
+        await tx.wait();
+        alert('Departure logged successfully!');
+    } catch (error) {
+        console.error(error);
+        alert('Departure logging failed');
+    }
+});
+
+// Arrival Form Submission
+document.getElementById('arrivalForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    try {
+        const tx = await arrivalContract.logArrival(
+            parseInt(document.getElementById('arrivalBatchId').value),
+            document.getElementById('arrivalTransportType').value,
+            document.getElementById('arrivalOriginPort').value,
+            document.getElementById('originalDepartureDate').value,
+            document.getElementById('arrivalDate').value,
+            document.getElementById('arrivalLocation').value,
+            document.getElementById('delayed').checked
+        );
+        await tx.wait();
+        alert('Arrival logged successfully!');
+    } catch (error) {
+        console.error(error);
+        alert('Arrival logging failed');
+    }
+});
+</script>
+</body>
+</html>
