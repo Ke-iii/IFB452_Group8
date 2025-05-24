@@ -2,15 +2,152 @@
 <html>
 <head>
   <title>Coffee Supply Chain</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --coffee-brown: #6F4E37;
+      --cream: #F5E6D3;
+      --espresso: #362415;
+      --latte: #A78B71;
+      --accent: #FFA726;
+    }
 
+    body {
+      font-family: 'Poppins', sans-serif;
+      margin: 0;
+      padding: 20px;
+      background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), 
+                  url('https://images.unsplash.com/photo-1495474472287-4d71bcdd2085') center/cover;
+      color: var(--cream);
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 2.5rem;
+      margin: 2rem 0;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--accent);
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .form-container {
+      background: rgba(54, 36, 21, 0.9);
+      margin: 2rem auto;
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease;
+      max-width: 500px;
+    }
+
+    .form-container:hover {
+      transform: translateY(-5px);
+    }
+
+    h2 {
+      color: var(--accent);
+      margin-top: 0;
+      font-size: 1.8rem;
+      border-bottom: 2px solid var(--latte);
+      padding-bottom: 0.5rem;
+      margin-bottom: 1.5rem;
+    }
+
+    input, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    input {
+      background: rgba(245, 230, 211, 0.1);
+      color: var(--cream);
+      border: 1px solid var(--latte);
+    }
+
+    input:focus {
+      outline: none;
+      border-color: var(--accent);
+      background: rgba(245, 230, 211, 0.2);
+    }
+
+    button {
+      background: var(--coffee-brown);
+      color: white;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      cursor: pointer;
+      margin-top: 1.5rem;
+    }
+
+    button:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+
+    #connectButton {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--accent);
+      padding: 12px 25px;
+      border-radius: 25px;
+      font-weight: 600;
+      box-shadow: 0 4px 15px rgba(255,167,38,0.3);
+    }
+
+    #connectButton.connected {
+      background: #4CAF50;
+      box-shadow: 0 4px 15px rgba(76,175,80,0.3);
+    }
+
+    label[for="delayed"] {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin: 15px 0;
+      color: var(--cream);
+    }
+
+    input[type="checkbox"] {
+      width: auto;
+      margin: 0;
+    }
+	.alert-box {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 15px;
+      background: #4CAF50;
+      color: white;
+      border-radius: 5px;
+      display: none;
+    }
+    .etherscan-link {
+      color: #ffeb3b;
+      text-decoration: underline;
+      cursor: pointer;
+    }
+  </style>
 </head>
 <body>
-<button id="connectButton">Connect MetaMask</button>
   <div class="container">
     <h1>Coffee Supply Chain</h1>
 
         <div class="form-container">
-        <h2>Farmer Batch Registration</h2>
+        <h2>🌱 Farmer Batch Registration</h2>
         <form id="farmerForm">
             <input type="text" id="certification" placeholder="Certification" required>
             <input type="text" id="harvestDate" placeholder="Harvest Date" required>
@@ -24,32 +161,50 @@
 
     <!-- Departure Log -->
     <div class="form-container">
-        <h2>Export Departure Logistics</h2>
+        <h2>🚢 Export Departure Logistics</h2>
         <form id="departureForm">
-            <input type="number" placeholder="Batch ID" required>
-            <input type="text" placeholder="Transport Type" required>
-            <input type="text" placeholder="Origin Port" required>
-            <input type="text" placeholder="Departure Date" required>
+            <input type="number" id="departureBatchId" placeholder="Batch ID" required>
+            <input type="text" id="transportType" placeholder="Transport Type" required>
+            <input type="text" id="originPort" placeholder="Origin Port" required>
+            <input type="text" id="departureDate" placeholder="Departure Date" required>
             <button type="submit">Log Departure</button>
         </form>
     </div>
 
     <!-- Arrival Log -->
     <div class="form-container">
-        <h2>Export Arrival Logistics</h2>
+        <h2>📦 Export Arrival Logistics</h2>
         <form id="arrivalForm">
-            <input type="number" placeholder="Batch ID" required>
-            <input type="text" placeholder="Transport Type" required>
-            <input type="text" placeholder="Origin Port" required>
-            <input type="text" placeholder="Departure Date" required>
-            <input type="text" placeholder="Arrival Date" required>
-            <input type="text" placeholder="Arrival Location" required>
-            <label><input type="checkbox"> Delayed</label>
+            <input type="number" id="arrivalBatchId" placeholder="Batch ID" required>
+            <input type="text" id="arrivalTransportType" placeholder="Transport Type" required>
+            <input type="text" id="arrivalOriginPort" placeholder="Origin Port" required>
+            <input type="text" id="originalDepartureDate" placeholder="Departure Date" required>
+            <input type="text" id="arrivalDate" placeholder="Arrival Date" required>
+            <input type="text" id="arrivalLocation" placeholder="Arrival Location" required>
+            <label><input type="checkbox" id="delayed"> Delayed</label>
             <button type="submit">Log Arrival</button>
         </form>
     </div>
 
   </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
   <script> 
@@ -795,17 +950,34 @@ async function initializeContracts() {
     arrivalContract = new ethers.Contract(arrivalAddress, arrivalABI, signer);
 }
 
-// Connect MetaMask
-document.getElementById('connectButton').addEventListener('click', async () => {
-    try {
-        await window.ethereum.request({ method: 'eth_requestAccounts' });
-        await initializeContracts();
-        alert('Connected to MetaMask!');
-    } catch (error) {
-        console.error(error);
-        alert('MetaMask connection failed');
+
+async function getEtherscanUrl(txHash) {
+      try {
+        const network = await provider.getNetwork();
+        let subdomain = '';
+        
+        // Handle different networks
+        switch(network.chainId) {
+          case 1: // Mainnet
+            subdomain = '';
+            break;
+          case 11155111: // Sepolia
+            subdomain = 'sepolia.';
+            break;
+          case 5: // Goerli
+            subdomain = 'goerli.';
+            break;
+          default:
+            return ''; // Unknown network
+        }
+        
+        return `https://${subdomain}etherscan.io/tx/${txHash}`;
+      } catch (error) {
+        console.error('Error getting network:', error);
+        return '';
+      }
     }
-});
+
 
 // Farmer Form Submission
 document.getElementById('farmerForm').addEventListener('submit', async (e) => {
@@ -819,8 +991,17 @@ document.getElementById('farmerForm').addEventListener('submit', async (e) => {
             document.getElementById('practices').value,
             document.getElementById('exportCompany').value
         );
-        await tx.wait();
-        alert('Batch registered successfully!');
+        
+		const loadingAlert = alert('Transaction sent! Waiting for confirmation...');
+        const receipt = await tx.wait();
+        const etherscanUrl = await getEtherscanUrl(tx.hash);
+        
+        if (etherscanUrl) {
+          alert(`Batch registered successfully!\n\nView transaction: ${etherscanUrl}`);
+        } else {
+          alert('Batch registered successfully!\n(Etherscan link unavailable)');
+        }
+
     } catch (error) {
         console.error(error);
         alert('Registration failed');
@@ -837,8 +1018,17 @@ document.getElementById('departureForm').addEventListener('submit', async (e) =>
             document.getElementById('originPort').value,
             document.getElementById('departureDate').value
         );
-        await tx.wait();
-        alert('Departure logged successfully!');
+
+        alert('Transaction sent! Waiting for confirmation...');
+        const receipt = await tx.wait();
+        const etherscanUrl = await getEtherscanUrl(tx.hash);
+        
+        if (etherscanUrl) {
+          alert(`Departure logged successfully!\n\nView transaction: ${etherscanUrl}`);
+        } else {
+          alert('Departure logged successfully!\n(Etherscan link unavailable)');
+        }
+
     } catch (error) {
         console.error(error);
         alert('Departure logging failed');
@@ -858,8 +1048,17 @@ document.getElementById('arrivalForm').addEventListener('submit', async (e) => {
             document.getElementById('arrivalLocation').value,
             document.getElementById('delayed').checked
         );
-        await tx.wait();
-        alert('Arrival logged successfully!');
+
+        alert('Transaction sent! Waiting for confirmation...');
+        const receipt = await tx.wait();
+        const etherscanUrl = await getEtherscanUrl(tx.hash);
+        
+        if (etherscanUrl) {
+          alert(`Arrival logged successfully!\n\nView transaction: ${etherscanUrl}`);
+        } else {
+          alert('Arrival logged successfully!\n(Etherscan link unavailable)');
+        }
+
     } catch (error) {
         console.error(error);
         alert('Arrival logging failed');
