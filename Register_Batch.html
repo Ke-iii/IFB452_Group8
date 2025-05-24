@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register Farmer Batch</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e5d0b1, #c8a888);
+      margin: 0;
+      padding: 2rem;
+      color: #3e2f1c;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      background-color: #f8f1ea;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      margin-top: 6rem;
+    }
+    h2 {
+      text-align: center;
+      color: #5e412f;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #d3bfa5;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #fffaf6;
+    }
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to right, #8e735b, #5e412f);
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #status {
+      margin-top: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to right, #8e735b, #5e412f);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+    nav a button {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #f8f1ea;
+      color: #5e412f;
+      font-weight: bold;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="Home.html"><button>Home</button></a>
+    <a href="Register_Batch.html"><button>Register Batch</button></a>
+    <a href="View_batches.html"><button>View Batches</button></a>
+    <a href="Export.html"><button>Exporting</button></a>
+    <a href="Arrival.html"><button>Importing</button></a>
+  </nav>
+
+  <div class="container">
+    <h2>Register Farmer Batch</h2>
+    <input id="certification" placeholder="Certification" required />
+    <input id="harvestDate" placeholder="Harvest Date" required />
+    <input id="location" placeholder="Location" required />
+    <input id="farmName" placeholder="Farm Name" required />
+    <input id="practices" placeholder="Farming Practices" required />
+    <input id="exportCompany" placeholder="Export Company" required />
+    <button onclick="registerBatch()">Submit</button>
+    <p id="status"></p>
+    <a href="View_batches.html"><button type="button">View Registered Batches</button></a>
+  </div>
+
+  <script>
+    const CONTRACT_ADDRESS = "0x153a29F9d9096265037bE70e8F33C602d0C5E702"; 
+    const ABI = [
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_certification",
+				"type": "string"
+			}
+		],
+		"name": "addCertification",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "certification",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "harvestDate",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "farmName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "practices",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "exportCompany",
+				"type": "string"
+			}
+		],
+		"name": "BatchRegistered",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_certification",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_harvestDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_farmName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_practices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_exportCompany",
+				"type": "string"
+			}
+		],
+		"name": "registerBatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_certification",
+				"type": "string"
+			}
+		],
+		"name": "removeCertification",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "batches",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "certification",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "harvestDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "farmName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "practices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "exportCompany",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "batchIdCounter",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "index",
+				"type": "uint256"
+			}
+		],
+		"name": "getBatch",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "certification",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "harvestDate",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "farmName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "practices",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "exportCompany",
+				"type": "string"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "getBatchCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "bytes32",
+				"name": "",
+				"type": "bytes32"
+			}
+		],
+		"name": "validCertifications",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+
+    async function registerBatch() {
+      const status = document.getElementById("status");
+      try {
+        if (!window.ethereum) throw new Error("MetaMask not detected.");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        await provider.send("eth_requestAccounts", []);
+        const signer = provider.getSigner();
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, signer);
+
+        const tx = await contract.registerBatch(
+          document.getElementById("certification").value,
+          document.getElementById("harvestDate").value,
+          document.getElementById("location").value,
+          document.getElementById("farmName").value,
+          document.getElementById("practices").value,
+          document.getElementById("exportCompany").value
+        );
+
+        status.textContent = "Submitting transaction...";
+        await tx.wait();
+        status.textContent = "✅ Batch registered successfully!";
+      } catch (err) {
+        status.textContent = "❌ Error: " + (err.message || "Transaction failed.");
+        console.error(err);
+      }
+    }
+  </script>
+</body>
+</html>

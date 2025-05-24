@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>View Registered Coffee Batches</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e5d0b1, #c8a888);
+      margin: 0;
+      padding: 2rem;
+      color: #3e2f1c;
+    }
+
+    nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      background: linear-gradient(to right, #8e735b, #5e412f);
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+    }
+
+    nav a button {
+      padding: 0.6rem 1rem;
+      border: none;
+      border-radius: 8px;
+      background: #f8f1ea;
+      color: #5e412f;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 6rem auto 2rem auto;
+      padding: 2rem;
+      background-color: #f8f1ea;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #5e412f;
+    }
+
+    .batch {
+      border: 1px solid #d3bfa5;
+      background: #fffaf6;
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+  </style>
+</head>
+
+<body>
+  <nav>
+    <a href="Home.html"><button>Home</button></a>
+    <a href="Register_Batch.html"><button>Register Batch</button></a>
+    <a href="View_batches.html"><button>View Batches</button></a>
+    <a href="Export.html"><button>Exporting</button></a>
+    <a href="Arrival.html"><button>Importing</button></a>
+  </nav>
+
+  <div class="container">
+    <h2>Registered Coffee Batches</h2>
+    <div id="batchList">Loading...</div>
+  </div>
+
+  <script>
+    const CONTRACT_ADDRESS = "0x48Ab796BFeCdAbdF47280529d66244dcB0cce6Cd"; // Remember to replace this
+    const ABI = [[
+	{
+		"inputs": [],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "batchId",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "batchName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "farmOrigin",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "processingMethod",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "roastLevel",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "producer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "CoffeeBatchCreated",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "batchCount",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "coffeeBatches",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "batchName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "farmOrigin",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "processingMethod",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "roastLevel",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "producer",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_batchName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_farmOrigin",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_processingMethod",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_roastLevel",
+				"type": "string"
+			}
+		],
+		"name": "createCoffeeBatch",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_batchId",
+				"type": "uint256"
+			}
+		],
+		"name": "getCoffeeBatch",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "batchName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "farmOrigin",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "processingMethod",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "roastLevel",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "producer",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]];
+
+    async function loadBatches() {
+      const batchList = document.getElementById("batchList");
+
+      try {
+        if (!window.ethereum) throw new Error("MetaMask not detected.");
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const contract = new ethers.Contract(CONTRACT_ADDRESS, ABI, provider);
+
+        const count = await contract.batchCount();
+        if (count.toNumber() === 0) {
+          batchList.innerHTML = "<p>No batches found.</p>";
+          return;
+        }
+
+        batchList.innerHTML = "";
+
+        for (let i = 1; i <= count.toNumber(); i++) {
+          const batch = await contract.getCoffeeBatch(i);
+          const div = document.createElement("div");
+          div.className = "batch";
+          div.innerHTML = `
+            <p><strong>Batch ID:</strong> ${i}</p>
+            <p><strong>Batch Name:</strong> ${batch[0]}</p>
+            <p><strong>Farm Origin:</strong> ${batch[1]}</p>
+            <p><strong>Processing Method:</strong> ${batch[2]}</p>
+            <p><strong>Roast Level:</strong> ${batch[3]}</p>
+            <p><strong>Producer:</strong> ${batch[4]}</p>
+            <p><strong>Timestamp:</strong> ${new Date(batch[5] * 1000).toLocaleString()}</p>
+          `;
+          batchList.appendChild(div);
+        }
+      } catch (err) {
+        console.error(err);
+        batchList.innerHTML = "<p>Error loading batches. Check MetaMask and contract connection.</p>";
+      }
+    }
+
+    loadBatches();
+  </script>
+</body>
+</html>

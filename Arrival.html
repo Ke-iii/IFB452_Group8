@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Import Farmer Batches Information</title>
+  <script src="https://cdn.jsdelivr.net/npm/ethers@5.7.2/dist/ethers.umd.min.js"></script>
+  <style>
+    body{
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #e5d0b1, #c8a888);
+      margin: 0;
+      padding: 2rem;
+      color: #3e2f1c;
+    }
+    .container {
+      max-width: 600px;
+      margin: auto;
+      padding: 2rem;
+      background-color: #f8f1ea;
+      border-radius: 12px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+	  margin-top: 4rem;
+    }
+    h2 {
+      text-align: center;
+      color: #5e412f;
+    }
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #d3bfa5;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #fffaf6;
+    }
+    button {
+      width: 100%;
+      padding: 1rem;
+      background: linear-gradient(to right, #8e735b, #5e412f);
+      color: white;
+      font-size: 1rem;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    button:hover {
+      opacity: 0.9;
+    }
+    #status {
+      margin-top: 1rem;
+      font-weight: bold;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+	<div>
+		<nav style="
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background: linear-gradient(to right, #8e735b, #5e412f);
+  padding: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+">
+  <a href="Home.html">
+    <button style="padding: 0.6rem 1rem; border: none; border-radius: 8px; background: #f8f1ea; color: #5e412f; font-weight: bold; cursor: pointer;">
+      Home
+    </button>
+  </a>
+  <a href="Register_Batch.html">
+    <button style="padding: 0.6rem 1rem; border: none; border-radius: 8px; background: #f8f1ea; color: #5e412f; font-weight: bold; cursor: pointer;">
+      Register Batch
+    </button>
+  </a>
+  <a href="View_batches.html">
+    <button style="padding: 0.6rem 1rem; border: none; border-radius: 8px; background: #f8f1ea; color: #5e412f; font-weight: bold; cursor: pointer;">
+      View Batches
+    </button>
+  </a>
+  <a href="Export.html">
+    <button style="padding: 0.6rem 1rem; border: none; border-radius: 8px; background: #f8f1ea; color: #5e412f; font-weight: bold; cursor: pointer;">
+      Exporting
+    </button>
+  </a>
+  <a href="Arrival.html">
+    <button style="padding: 0.6rem 1rem; border: none; border-radius: 8px; background: #f8f1ea; color: #5e412f; font-weight: bold; cursor: pointer;">
+      Importing
+    </button>
+  </a>
+</nav>
+
+</head>
+</body>
+
+<div class="container">
+  <h2>Log Export Arrival</h2>
+
+  <form id="arrivalForm">
+    <label>Batch ID: <input type="number" id="batchId" required /></label><br />
+    <label>Transport Type: <input type="text" id="transportType" required /></label><br />
+    <label>Origin Port: <input type="text" id="originPort" required /></label><br />
+    <label>Departure Date: <input type="date" id="departureDate" required /></label><br />
+    <label>Arrival Date: <input type="date" id="arrivalDate" required /></label><br />
+    <label>Arrival Location: <input type="text" id="arrivalLocation" required /></label><br />
+    <label>Delayed:
+      <select id="delayed">
+        <option value="false">No</option>
+        <option value="true">Yes</option>
+      </select>
+    </label><br />
+    <button type="submit">Submit Arrival Log</button>
+  </form>
+
+  <p id="status"></p>
+</div>
+
+<script>
+const ARRIVAL_CONTRACT = "0xYourExportArrivalLogisticsAddressHere";
+
+const arrivalABI = [ /* Paste your ExportArrivalLogistics ABI here */ ];
+
+let provider, signer, arrivalContract;
+
+async function init() {
+  if (!window.ethereum) {
+    document.getElementById("status").innerText = "MetaMask not detected.";
+    return;
+  }
+
+  provider = new ethers.providers.Web3Provider(window.ethereum);
+  await provider.send("eth_requestAccounts", []);
+  signer = provider.getSigner();
+  arrivalContract = new ethers.Contract(ARRIVAL_CONTRACT, arrivalABI, signer);
+}
+
+document.getElementById("arrivalForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const status = document.getElementById("status");
+
+  const batchId = parseInt(document.getElementById("batchId").value);
+
+  try {
+    const tx = await arrivalContract.logArrival(
+      batchId,
+      document.getElementById("transportType").value,
+      document.getElementById("originPort").value,
+      document.getElementById("departureDate").value,
+      document.getElementById("arrivalDate").value,
+      document.getElementById("arrivalLocation").value,
+      document.getElementById("delayed").value === "true"
+    );
+
+    await tx.wait();
+    status.innerText = `Arrival for batch ${batchId} logged successfully.`;
+    document.getElementById("arrivalForm").reset();
+
+  } catch (err) {
+    console.error(err);
+    status.innerText = "Error logging arrival. Check console for details.";
+  }
+});
+
+init();
+</script>
