@@ -47,10 +47,9 @@ This uses `lite-server` to serve the dApp locally.
 
 ## Using the App
 
-1. Click **Connect to MetaMask** to link the wallet.
-2. Fill out the tabs (Farmer Batch Registration, Export Departure Logistics, Export Arrival Logistics).
-3. Click the relevant button.
-4. All interactions are recorded and verified on-chain.
+1. Fill out the tabs (Farmer Batch Registration, Export Departure Logistics, Export Arrival Logistics).
+2. Click the relevant button.
+3. All interactions are recorded and verified on-chain.
 
 ---
 
