@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.20;
 
-/// Interface to retrieve batch data from FarmersBatchRegistration
+/// Interface to retrieve information from Farmers Batch Registration smartcontract
 interface IFarmersBatchRegistration {
     function getBatchCount() external view returns (uint256);
     function getBatch(uint256 index) external view returns (
@@ -15,6 +15,7 @@ interface IFarmersBatchRegistration {
     );
 }
 
+// create and name contract and visability
 contract ExportArrivalLogistics {
     address public owner;
     IFarmersBatchRegistration public farmerContract;
@@ -29,7 +30,7 @@ contract ExportArrivalLogistics {
         _;
     }
 
-    // Struct to hold arrival details
+    // hold arrival details
     struct Arrival {
         uint256 batchId;
         string transportType;
@@ -41,10 +42,9 @@ contract ExportArrivalLogistics {
         bool logged;
     }
 
-    // Mapping batchId => Arrival info
+    // adding batchId into Arrival info
     mapping(uint256 => Arrival) public arrivals;
 
-    // Event emitted when arrival is logged
     event ArrivalLogged(
         uint256 batchId,
         string transportType,
@@ -56,7 +56,7 @@ contract ExportArrivalLogistics {
         address exporter
     );
 
-    /// @notice Log the arrival details of a coffee export batch
+    /// Log the arrival details of a coffee export batch
     function logArrival(
         uint256 _batchId,
         string memory _transportType,
@@ -92,12 +92,12 @@ contract ExportArrivalLogistics {
         );
     }
 
-    /// @notice Get arrival log for a specific batch
+    /  Get arrival log for a specific batch
     function getArrival(uint256 _batchId) public view returns (Arrival memory) {
         return arrivals[_batchId];
     }
 
-    /// @dev Verifies that a batchId exists in the farmer registry
+    // Verify batchId exists in the farmer registry
     function _isValidBatchId(uint256 _batchId) internal view returns (bool) {
         uint256 count = farmerContract.getBatchCount();
         for (uint256 i = 0; i < count; i++) {
