@@ -56,7 +56,7 @@ contract ExportArrivalLogistics {
         address exporter
     );
 
-    /// Log the arrival details of a coffee export batch
+    // Log the arrival details of a coffee export batch
     function logArrival(
         uint256 _batchId,
         string memory _transportType,
@@ -92,7 +92,7 @@ contract ExportArrivalLogistics {
         );
     }
 
-    /  Get arrival log for a specific batch
+    // Get arrival log for a specific batch
     function getArrival(uint256 _batchId) public view returns (Arrival memory) {
         return arrivals[_batchId];
     }
