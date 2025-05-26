@@ -1,15 +1,15 @@
-# ☕ Blockchain Coffee Supply Verification
+# Blockchain Coffee Supply Verification
 
 A decentralised system for verifying the origin and movement of coffee batches using smart contracts on the Ethereum Sepolia TestNet.
 
-## 📦 Features
+## Features
 - Farmers can register coffee batches on chain
 - Exporters can log departure details
 - Arrival authorities can confirm arrival and validate data
 
 ---
 
-## 🛠️ Getting Started
+## Getting Started
 
 ### 1. Clone the Repository
 
@@ -35,26 +35,26 @@ This uses `lite-server` to serve the dApp locally.
 
 ---
 
-## 🦊 Set Up MetaMask
+## Set Up MetaMask
 
 1. Install [MetaMask extension](https://metamask.io/)
 2. Create a wallet
 3. Switch to the **Sepolia TestNet**
 4. Get SepoliaETH for testing:  
-   👉 [https://sepolia-faucet.pk910.de](https://sepolia-faucet.pk910.de/)
+   -> [https://sepolia-faucet.pk910.de](https://sepolia-faucet.pk910.de/)
 
 ---
 
-## 🚀 Using the App
+## Using the App
 
 1. Click **Connect to MetaMask** to link the wallet.
-2. Fill out the tabs (🌱 Farmer Batch Registration, 🚢 Export Departure Logistics, 📦 Export Arrival Logistics).
+2. Fill out the tabs (Farmer Batch Registration, Export Departure Logistics, Export Arrival Logistics).
 3. Click the relevant button.
 4. All interactions are recorded and verified on-chain.
 
 ---
 
-## 👥 Team Members
+## Team Members
 
 - Sandaru Nakandage  
 - Mia Louw 
