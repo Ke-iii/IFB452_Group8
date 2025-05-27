@@ -15,12 +15,12 @@ interface IFarmersBatchRegistration {
     );
 }
 
-// create and name contract and visability
+// create and name contract and visability, 
 contract ExportArrivalLogistics {
     address public owner;
     IFarmersBatchRegistration public farmerContract;
 
-// sets owner
+// sets owner address that deployed the contract
     constructor(address _farmerContractAddress) {
         owner = msg.sender;
         farmerContract = IFarmersBatchRegistration(_farmerContractAddress);
@@ -43,7 +43,7 @@ contract ExportArrivalLogistics {
         bool logged;
     }
 
-    // adding batchId into Arrival info
+    // adding batchId into Arrival info, public controls who can call a function or access a variable
     mapping(uint256 => Arrival) public arrivals;
 
     event ArrivalLogged(
