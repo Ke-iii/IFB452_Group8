@@ -20,11 +20,12 @@ contract ExportArrivalLogistics {
     address public owner;
     IFarmersBatchRegistration public farmerContract;
 
+// sets owner
     constructor(address _farmerContractAddress) {
         owner = msg.sender;
         farmerContract = IFarmersBatchRegistration(_farmerContractAddress);
     }
-
+// Checks that the person calling the function is the contract owner
     modifier onlyExporter() {
         require(msg.sender == owner, "Only verified exporter can log arrival");
         _;
@@ -79,7 +80,7 @@ contract ExportArrivalLogistics {
             delayed: _delayed,
             logged: true
         });
-
+// triggers the event,  off-chain readable
         emit ArrivalLogged(
             _batchId,
             _transportType,
