@@ -101,6 +101,7 @@ contract ExportArrivalLogistics {
     // Verify batchId exists in the farmer registry
     function _isValidBatchId(uint256 _batchId) internal view returns (bool) {
         uint256 count = farmerContract.getBatchCount();
+// Loops through all batch indices starting from 0
         for (uint256 i = 0; i < count; i++) {
             (uint256 id,,,,,,) = farmerContract.getBatch(i);
             if (id == _batchId) {
